@@ -1,92 +1,92 @@
-# HAOS Legacy BIOS Factory Script â€” Detaljerad Teknisk Manual (Svenska/English)
+# HAOS Legacy BIOS Factory Script — Detaljerad Teknisk Manual (Svenska/English)
 
 ---
 
-## ðŸ‡¸ðŸ‡ª **Svenska â€” Teknisk fÃ¶rklaring**
+## 🇸🇪 **Svenska — Teknisk förklaring**
 
 ### **Syfte**
 
-Detta script mÃ¶jliggÃ¶r installation av Home Assistant OS (HAOS) pÃ¥ x86-64-maskiner med endast legacy BIOS (utan UEFI), vilket inte stÃ¶ds av moderna HAOS-versioner.
+Detta script möjliggör installation av Home Assistant OS (HAOS) på x86-64-maskiner med endast legacy BIOS (utan UEFI), vilket inte stöds av moderna HAOS-versioner.
 
 ---
 
 ### **Teknisk Problembild**
 
-- **HAOS-diskimage** anvÃ¤nder alltid **GPT** fÃ¶r partitionsschema och fÃ¶rvÃ¤ntar sig UEFI-boot.
-- BIOS-maskiner vill helst ha **MBR** och kan INTE direkt lÃ¤sa GPT/UFS-root, samt hittar ofta inte rÃ¤tt bootsektorer.
+- **HAOS-diskimage** använder alltid **GPT** för partitionsschema och förväntar sig UEFI-boot.
+- BIOS-maskiner vill helst ha **MBR** och kan INTE direkt läsa GPT/UFS-root, samt hittar ofta inte rätt bootsektorer.
 - Core-struktur i GPT:
   - *sda1*: `hassos-boot` (FAT16, bootfiler)
   - *sda2--sda6*: kernel/root/system/backups
   - *sda8*: `hassos-data` (user data)
-- BIOS kan inte starta *nÃ¥gon* av dessa direkt.
+- BIOS kan inte starta *någon* av dessa direkt.
 
 ---
 
-### **Tekniska LÃ¶sningssteg (Vad Scriptet GÃ¶r)**
+### **Tekniska Lösningssteg (Vad Scriptet Gör)**
 
 1. **Image-Skrivning**
-    - HÃ¤mtar (eller lÃ¤ser frÃ¥n egen server) en xz-komprimerad HAOS-image (t.ex. v13.0), paketerad av Home Assistant-teamet.
-    - Skriver bilden rakt ut till vald disk med `dd` (blockÂ­lÃ¤get), sÃ¥ hela GPT-tavlan, alla partitioners UUID och originalstruktur bevaras bit fÃ¶r bit.
-    - Detta krÃ¤vs fÃ¶r att hela det officiella HAOS-upplÃ¤gget med updatering/backups/addons ska fungera.
+    - Hämtar (eller läser från egen server) en xz-komprimerad HAOS-image (t.ex. v13.0), paketerad av Home Assistant-teamet.
+    - Skriver bilden rakt ut till vald disk med `dd` (block­läget), så hela GPT-tavlan, alla partitioners UUID och originalstruktur bevaras bit för bit.
+    - Detta krävs för att hela det officiella HAOS-upplägget med updatering/backups/addons ska fungera.
 
 2. **Synkar Kernel/Devices**
-    - `partprobe`, `udevadm settle`, sleepÂ â€” garanterar att alla `/dev/sdXN`-noder och kerneltabeller Ã¤r fullt i synk innan vidare partitionsexpansion eller GRUB-operatÃ¶r.
-    - LÃ¶st mÃ¥nga edge-cases pÃ¥ Ã¤ldre BIOS dÃ¤r statiska device nodes kan bli fel.
+    - `partprobe`, `udevadm settle`, sleep — garanterar att alla `/dev/sdXN`-noder och kerneltabeller är fullt i synk innan vidare partitionsexpansion eller GRUB-operatör.
+    - Löst många edge-cases på äldre BIOS där statiska device nodes kan bli fel.
 
 3. **Partitionstabell-vidgning (sgdisk)**
-    - Om disken Ã¤r stÃ¶rre Ã¤n imagen, expanderas GPT sÃ¥ att hela fysiska disken kan anvÃ¤ndas (sjÃ¤lvklart, annars â€œmissarâ€ man MB/GB).
+    - Om disken är större än imagen, expanderas GPT så att hela fysiska disken kan användas (självklart, annars “missar” man MB/GB).
     - (`sgdisk -e`). Synk igen.
 
-4. **Bryggpartition (GRUB-Bridge, EXT4) â€” Dynamisk storlek**
-    - Krymper partition 8 (â€œhassos-dataâ€) sÃ¥ att ledigt utrymme skapas pÃ¥ slutet.
-    - Loopar med _flera minskande storlekar_ (32â†’8MB) och fÃ¶rsÃ¶ker skapa ny partition 9 (â€œGRUB Bridgeâ€) med `sgdisk` som EXT4-typ.
-    - Skapar EXT4-filsystem pÃ¥ denna, **endast om tillrÃ¤ckligt med plats.**
-    - VarfÃ¶r ext4? FÃ¶r det Ã¤r den enda robusta metoden GRUB Legacy kan anvÃ¤nda pÃ¥ gpt-disk i BIOS om man vill undvika UEFI/EF02â€”en direkt effekt av ThinkPad-communityns reverse engineering.
+4. **Bryggpartition (GRUB-Bridge, EXT4) — Dynamisk storlek**
+    - Krymper partition 8 (“hassos-data”) så att ledigt utrymme skapas på slutet.
+    - Loopar med _flera minskande storlekar_ (32→8MB) och försöker skapa ny partition 9 (“GRUB Bridge”) med `sgdisk` som EXT4-typ.
+    - Skapar EXT4-filsystem på denna, **endast om tillräckligt med plats.**
+    - Varför ext4? För det är den enda robusta metoden GRUB Legacy kan använda på gpt-disk i BIOS om man vill undvika UEFI/EF02—en direkt effekt av ThinkPad-communityns reverse engineering.
 
 5. **GRUB-installation**
-    - Mountar â€œbrygganâ€, lÃ¤gger boot-directory och installerar legacy GRUB (`grub-install --target=i386-pc`) rakt till MBR.
-    - LÃ¤gger in custom `grub.cfg` som pekar pÃ¥ HAOS bootpartition.
-    - *Om* bryggan blir fÃ¶r liten/GRUB-install failar:  
-      ----> **Fallback: installerar GRUB rakt pÃ¥ hassos-boot-partitionen** (`/dev/sda1`, FAT16), som dock saknar vissa features men alltid startar HAOS.
+    - Mountar “bryggan”, lägger boot-directory och installerar legacy GRUB (`grub-install --target=i386-pc`) rakt till MBR.
+    - Lägger in custom `grub.cfg` som pekar på HAOS bootpartition.
+    - *Om* bryggan blir för liten/GRUB-install failar:  
+      ----> **Fallback: installerar GRUB rakt på hassos-boot-partitionen** (`/dev/sda1`, FAT16), som dock saknar vissa features men alltid startar HAOS.
 
-6. **Boot-kedja (BIOSâ†’MBR/GRUBâ†’bryggaâ†’HAOS/GRUB2)**
+6. **Boot-kedja (BIOS→MBR/GRUB→brygga→HAOS/GRUB2)**
     - Vid boot:
-      1. **BIOS** sÃ¶ker MBR, laddar GRUB frÃ¥n brygga/boot-partition.
-      2. **GRUB** hittar/â€chainloadarâ€ config/filer frÃ¥n GPT/boot.
+      1. **BIOS** söker MBR, laddar GRUB från brygga/boot-partition.
+      2. **GRUB** hittar/”chainloadar” config/filer från GPT/boot.
       3. **HAOS** startar kernel/initrd upp genom sin egen moderna bootkedja.
-    - Allt sker *utan UEFI*, ingen Ã¤ndring av original-HAOS, inget behov av EF02.
+    - Allt sker *utan UEFI*, ingen ändring av original-HAOS, inget behov av EF02.
 
 ---
 
-#### **Erfarenheter och grÃ¤nser**
+#### **Erfarenheter och gränser**
 
-- Fungerar pÃ¥: X61s, HP DC5100, Ã¤ldre Dells, IBM server/desktop x86-64, m.fl.
+- Fungerar på: X61s, HP DC5100, äldre Dells, IBM server/desktop x86-64, m.fl.
 - Testat: SSD, IDE, SATA, USB-adapter
-- **HAOS 13 rekommenderas. Nyare versioner** (t.ex. 15) kraschar pÃ¥ mÃ¥nga gamla BIOS-PC.
-- Du fÃ¥r ocensurerad HAOS-upplevelse med full Addon/Supervisor-stÃ¶d (ej mÃ¶jligt i container/lxc-docker pÃ¥ dessa maskiner).
+- **HAOS 13 rekommenderas. Nyare versioner** (t.ex. 15) kraschar på många gamla BIOS-PC.
+- Du får ocensurerad HAOS-upplevelse med full Addon/Supervisor-stöd (ej möjligt i container/lxc-docker på dessa maskiner).
 
 ---
 
 ### **Full Installation Workflow**
 
-1. Starta Ubuntu (eller anvÃ¤nd Live USB).
+1. Starta Ubuntu (eller använd Live USB).
 2. Koppla in disk (den raderas!).
-3. KÃ¶r scriptet (`sudo ./haos_bios_factory_final.sh`).
-4. VÃ¤lj disk, konfirmera med â€˜yesâ€™.
-5. VÃ¤nta â€”Â alltfÃ¶ras automatiskt (status syns).
-6. SÃ¤tt disken i valfri BIOS-maskin och boot â€”Â HAOS lever!
+3. Kör scriptet (`sudo ./haos_bios_factory_final.sh`).
+4. Välj disk, konfirmera med ‘yes’.
+5. Vänta — alltföras automatiskt (status syns).
+6. Sätt disken i valfri BIOS-maskin och boot — HAOS lever!
 
 ---
 
 ### **Community-acknowledgement**
 
-Denna lÃ¶sning Ã¤r baserad pÃ¥ [Home Assistant-dokumentationens issue #39584](https://github.com/home-assistant/home-assistant.io/issues/39584).  
-Det Ã¤r genuin community reverse engineering pÃ¥ ett OS som annars exkluderar gammal hÃ¥rdvara.  
-Scriptet har vidare optimerats och robustifierats av TG-Proton m.fl. vÃ¥ren 2026 med hjÃ¤lp av OpenAI Copilot Chat.
+Denna lösning är baserad på [Home Assistant-dokumentationens issue #39584](https://github.com/home-assistant/home-assistant.io/issues/39584).  
+Det är genuin community reverse engineering på ett OS som annars exkluderar gammal hårdvara.  
+Scriptet har vidare optimerats och robustifierats av TG-Proton m.fl. våren 2026 med hjälp av OpenAI Copilot Chat.
 
 ---
 
-## ðŸ‡¬ðŸ‡§ **English â€” Detailed Technical Explanation**
+## 🇬🇧 **English — Detailed Technical Explanation**
 
 ### **Purpose**
 
@@ -114,26 +114,26 @@ This script enables installation of Home Assistant OS (HAOS) on x86-64 machines 
     - Required so that HAOS works as intended with its own update/backup system.
 
 2. **Kernel/Device Sync**
-    - Immediately after any operation: runs `partprobe`, `udevadm settle`, and sleepâ€”ensures all `/dev/sdXN` nodes and kernel representations are correct and up-to-date before resizing or running GRUB.
+    - Immediately after any operation: runs `partprobe`, `udevadm settle`, and sleep—ensures all `/dev/sdXN` nodes and kernel representations are correct and up-to-date before resizing or running GRUB.
     - This fixes edge-cases on older BIOS machines with inconsistent device mapping.
 
 3. **GPT repair (sgdisk)**
     - If disk is larger than the HAOS image, expands GPT so the full physical disk is used (`sgdisk -e`).
     - Sync again.
 
-4. **Bridge Partition (Dynamic size â€“ EXT4)**
+4. **Bridge Partition (Dynamic size – EXT4)**
     - Shrinks partition 8 ("hassos-data") to create free space at the physical disk end.
-    - Loops over multiple decreasing sizes (32â†’8MB) and tries to create a new partition 9 ("GRUB Bridge" EXT4).
+    - Loops over multiple decreasing sizes (32→8MB) and tries to create a new partition 9 ("GRUB Bridge" EXT4).
     - Creates EXT4 filesystem on it (only if enough space).
-    - Why EXT4? Because itâ€™s the only robust method for GRUB Legacy on a GPT disk/BIOS (without needing UEFI/EF02)â€”a hack proven by the ThinkPad and retro community.
+    - Why EXT4? Because it’s the only robust method for GRUB Legacy on a GPT disk/BIOS (without needing UEFI/EF02)—a hack proven by the ThinkPad and retro community.
 
 5. **GRUB Installation**
     - Mounts the bridge, lays down the boot directory and installs legacy GRUB (`grub-install --target=i386-pc`) directly to the MBR.
-    - Installs your chained `grub.cfg` referencing HAOSâ€™s boot partition.
+    - Installs your chained `grub.cfg` referencing HAOS’s boot partition.
     - *If* the bridge is too small or GRUB install fails:  
       ----> **Fallback: Installs GRUB directly onto the HAOS boot partition** (`/dev/sda1`, FAT16), which always boots, but with limited feature set.
 
-6. **Boot chain (BIOSâ†’MBR/GRUBâ†’bridgeâ†’HAOS/GRUB2)**
+6. **Boot chain (BIOS→MBR/GRUB→bridge→HAOS/GRUB2)**
     - At boot:
       1. **BIOS** loads MBR, boots GRUB from bridge or boot partition.
       2. **GRUB** finds/configures from GPT boot partition.
@@ -154,10 +154,10 @@ This script enables installation of Home Assistant OS (HAOS) on x86-64 machines 
 ### **Complete Usage Workflow**
 
 1. Boot Ubuntu (Live USB or installed).
-2. Attach your target disk (warningâ€”all data will be lost!).
+2. Attach your target disk (warning—all data will be lost!).
 3. Copy and run this script (`sudo ./haos_bios_factory_final.sh`).
 4. Choose your correct disk (e.g., sda/sdb), confirm.
-5. Wait for finishâ€”all steps handled automatically.
+5. Wait for finish—all steps handled automatically.
 6. Move disk to any BIOS-only (non-UEFI) machine and boot: HAOS is ready!
 
 ---
