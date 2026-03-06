@@ -82,7 +82,6 @@ Detta script möjliggör installation av Home Assistant OS (HAOS) på x86-64-mas
 
 Denna lösning är baserad på [Home Assistant-dokumentationens issue #39584](https://github.com/home-assistant/home-assistant.io/issues/39584).  
 Det är genuin community reverse engineering på ett OS som annars exkluderar gammal hårdvara.  
-Scriptet har vidare optimerats och robustifierats av TG-Proton m.fl. våren 2026 med hjälp av OpenAI Copilot Chat.
 
 ---
 
@@ -166,7 +165,6 @@ This script enables installation of Home Assistant OS (HAOS) on x86-64 machines 
 
 - This solution is based on [Home Assistant issue #39584](https://github.com/home-assistant/home-assistant.io/issues/39584).
 - Represents true community reverse engineering.
-- This script further optimised in 2026 by TG-Proton & OpenAI Copilot Chat with empirical fixes for edge-cases and legacy quirks.
 
 ---
 
