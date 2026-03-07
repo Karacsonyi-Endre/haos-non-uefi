@@ -1,4 +1,4 @@
-# Analysis of the Script
+# AI-analysis of the Script
 
 Here is exactly what the script does, step by step.
 ## What the Script Does
