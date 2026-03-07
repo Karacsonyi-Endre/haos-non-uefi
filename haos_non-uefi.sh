@@ -141,5 +141,8 @@ echo
 echo "========================================="
 echo " HAOS DISK OK OCH BOOTBAR!"
 echo " Brygga-partition: ${BRIDGE_MB:-ingen, fallback} MB"
+echo
+echo "The disk can now be moved to your computer."
+echo "Make sure your computer is set to boot in 'Legacy BIOS' mode."
 echo " Best regards, Endre Karacsonyi"
 echo "========================================="
