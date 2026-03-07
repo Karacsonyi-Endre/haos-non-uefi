@@ -1,6 +1,285 @@
-# HAOS Legacy BIOS Script — Manual (English/Svenska)
+# Manual (English/Svenska): Create a turnkey HAOS disk for BIOS
 
 ---
+
+> **This is not a "guide to build an image" – it is a tool that transforms a physical disk into a ready-to-boot HAOS start disk for BIOS machines in one single sweep.**
+>
+> Here is the manual for how to use the script `haos-non-uefi.sh` to create your ready-to-boot disk.
+>
+> **This script does the heavy lifting for you:** it fetches the official HAOS image, writes it to your hard drive, and then installs a specially configured GRUB bootloader so your old PC can boot from a modern GPT-partitioned disk.
+
+---
+
+## Why this is superior
+
+The script is designed to remove “human error”. It automatically lists all disks and lets you choose, eliminating the risk of accidentally overwriting the wrong partition. It creates a perfect copy of an official HAOS installation, but with the magic “BIOS key” that allows your old hardware to unlock and boot it.
+
+---
+
+## Why this is the only real solution for you
+
+Since the script injects a Hybrid-MBR, your BIOS can “see” the disk as an old-fashioned boot disk, while the actual data remains in the modern format required by HAOS. You get a 100% official HAOS experience on legacy hardware that the manufacturer has long since abandoned.
+
+---
+
+# Step-by-step: Create a Home Assistant OS disk with `haos-non-uefi.sh` (for COMPLETE Linux beginners)
+
+---
+
+## 1. Download the script
+
+### a) Boot Ubuntu (or similar Linux) on your computer
+- **Live USB?** Always pick "Try Ubuntu" (not "Install Ubuntu") when you boot from the thumbdrive.
+
+### b) Open the terminal
+- Click the top left menu and type “Terminal” (or press **Ctrl+Alt+T**).
+
+### c) Paste the following, then press Enter:
+```bash
+sudo apt update
+sudo apt install git curl xz-utils gdisk parted e2fsprogs grub-pc -y
+```
+*(This installs all required tools. Just copy-paste and press Enter!)*
+
+### d) Download the script from GitHub
+```bash
+git clone https://github.com/Karacsonyi-Endre/haos-non-uefi.git
+cd haos-non-uefi
+```
+
+---
+
+## 2. Insert your target disk
+
+- Plug in the SSD/HDD/USB stick you want to use as your Home Assistant disk.
+- **WARNING: All data on that disk will be erased!**
+
+---
+
+## 3. Make the script executable
+
+```bash
+chmod +x haos-non-uefi.sh
+```
+
+---
+
+## 4. Start the script
+
+```bash
+sudo ./haos-non-uefi.sh
+```
+
+- **It is important to use sudo!** Otherwise, the script cannot write to the disk.
+
+---
+
+## 5. Follow the on-screen instructions
+
+### a) Choose HAOS version
+- The script presents a menu with Home Assistant OS versions. Type a number (e.g., “1”) and press Enter for the newest version, or choose “EGEN_URL” to use your own link.
+
+### b) Choose your target disk
+- All disks are listed with size/model.
+- Type the number for the correct disk and press Enter.
+
+### c) Confirm
+- You get a final warning that your disk will be erased.
+- Type exactly `yes` and press Enter to continue.
+
+### d) Wait
+- The script downloads, writes, and finishes everything automatically. This may take several minutes depending on your internet and USB speed.
+
+---
+
+## 6. Done!
+
+- When you see **"KLART!"** or **"Ready"**, you’re finished.
+- Remove the disk and plug it into your old PC/server.
+- Boot up – Home Assistant will start automatically!
+
+---
+
+## Extra info for first-time Linux users
+
+- **What is a “terminal”?**  
+  A text window where you can paste and run commands directly.
+- **What does “sudo” mean?**  
+  “Super User DO” –  gives you extra privileges to write disks, install, etc.
+- **Do I have to pick the right disk?**  
+  YES! The script will erase everything on the disk you select. Read the list carefully, make sure you have the right size and model.
+
+---
+
+## FAQ
+
+**Q: Can this destroy my regular computer?**  
+A: Not if you CHOOSE THE RIGHT DISK. Be very careful when selecting your disk!
+
+**Q: Do I need to install Ubuntu?**  
+A: No! Just boot from USB and pick “Try Ubuntu”. Your regular computer is not affected.
+
+**Q: I get “permission denied” or “no such file”?**  
+A: Check your spelling, that you are in the right folder (`cd haos-non-uefi`), and always use `sudo` when running the script.
+
+---
+
+**Good luck! Your Home Assistant disk will be ready in just minutes – and you can repeat the process at any time with a new disk or a new version.**
+
+---
+
+---
+
+# Manual: Skapa en nyckelfärdig HAOS-disk för BIOS
+
+> **Det här är inte en "guide för att bygga en image", det är ett verktyg som förvandlar en fysisk disk till en färdig HAOS-startdisk för BIOS-maskiner i ett enda svep.**
+>
+> Här är manualen för hur du använder skriptet `haos-non-uefi.sh` för att skapa din färdiga disk.
+>
+> **Det här skriptet gör grovjobbet åt dig:** det hämtar den officiella HAOS-imagen, skriver den till din hårddisk, och installerar sedan en specialkonfigurerad GRUB-bootloader som gör att din gamla dator kan läsa den moderna GPT-partitionen.
+
+---
+
+## Varför detta är överlägset:
+
+Skriptet är skrivet för att ta bort "mänskliga faktorn". Genom att det själv listar diskarna och låter dig välja, elimineras risken att du skriver över fel partition av misstag. Det skapar en perfekt kopia av en officiell HAOS-installation, men med den magiska "BIOS-nyckeln" som gör att din gamla hårdvara faktiskt kan låsa upp den.
+
+---
+
+## Varför detta är den enda rätta lösningen för dig:
+
+Eftersom skriptet injicerar en Hybrid-MBR, kan ditt BIOS "se" disken som en gammaldags startbar disk, medan den faktiska datan ligger kvar i det moderna formatet som HAOS kräver. Du får alltså en officiell HAOS-upplevelse på hårdvara som tillverkaren egentligen gett upp hoppet om.
+
+---
+
+# Steg-för-steg: Skapa Home Assistant OS-disk med `haos-non-uefi.sh` (för HELT nya Linux-användare)
+
+## **1. Ladda ner skriptet**
+
+### **a) Starta Ubuntu (eller liknande Linux) på datorn**
+- **Live USB?** Välj alltid "Testa Ubuntu" eller "Try Ubuntu" när du bootar från stickan, INTE "Installera Ubuntu".
+
+### **b) Öppna “Terminal”**
+- Klicka på menyn uppe till vänster och skriv “Terminal” (eller tryck **Ctrl+Alt+T**).
+
+### **c) Skriv in följande och tryck Enter:**
+```bash
+sudo apt update
+sudo apt install git curl xz-utils gdisk parted e2fsprogs grub-pc -y
+```
+*(Detta installerar alla verktyg som behövs. Klistra rakt in och tryck Enter!)*
+
+### **d) Ladda ner skriptet från GitHub**
+```bash
+git clone https://github.com/Karacsonyi-Endre/haos-non-uefi.git
+cd haos-non-uefi
+```
+
+---
+
+## **2. Sätt in mål-disken**
+
+- Sätt i den SSD/HDD/USB-sticka som du vill använda som Home Assistant-disk.
+- **VARNING: Alla data på denna raderas!**
+
+---
+
+## **3. Gör skriptet körbart**
+
+```bash
+chmod +x haos-non-uefi.sh
+```
+
+---
+
+## **4. Starta skriptet**
+
+```bash
+sudo ./haos-non-uefi.sh
+```
+
+- Det är **viktigt med sudo** i början! Annars får skriptet inte rätt att skriva till disken.
+
+---
+
+## **5. Följ instruktionerna på skärmen (“tangentbordsval”)**
+
+### **a) Välj HAOS-version**
+- Skriptet visar olika versioner av Home Assistant OS. Skriv t.ex. “1” och tryck Enter för den senaste versionen, eller välj “EGEN_URL” om du vill ange en egen länk.
+
+### **b) Välj mål-disk**
+- Alla diskar listas med storlek/modell.
+- Skriv numret för rätt disk och tryck Enter.
+
+### **c) Bekräfta**
+- Du får ännu en varning att disken raderas.
+- Skriv exakt `yes` och tryck Enter för att fortsätta.
+
+### **d) Vänta**
+- Skriptet laddar ner, skriver och fixar klart allting automatiskt. Det kan ta några minuter beroende på din internet- och USB-hastighet.
+
+---
+
+## **6. Klart!**
+
+- När det står **"KLART!"** eller **"Ready"**, är det färdigt.
+- Dra ut disken, sätt in den i din gamla dator/server.
+- Starta – Home Assistant laddar automatiskt!
+
+---
+
+## **Extra för nybörjaren**
+
+- **Vad är en “terminal”?**  
+  Det är ett textfönster där du kan klistra in kommandon direkt och köra dem.
+- **Vad betyder “sudo”?**  
+  “Super User DO” – du får extra rättigheter så att du får skriva till diskar, installera mm.
+- **Måste jag välja exakt rätt disk?**  
+  JA! Skriptet raderar annars allting på den disk du pekar ut. Läs noga i listan, kolla storlek och modell så det verkligen är rätt.
+
+---
+
+## **Vanliga frågor**
+
+**Q: Kan detta förstöra min vanliga dator?**  
+A: Inte om du VÄLJER RÄTT DISK. Var extra noga när valrutan visas!
+
+**Q: Måste jag installera Ubuntu?**  
+A: Nej! Starta bara från USB och välj “Testa Ubuntu”. Då riskerar du inget på din vanliga dator.
+
+**Q: Jag får “permission denied” eller “no such file”?**  
+A: Kontrollera stavning, att du är i rätt katalog (`cd haos-non-uefi`), och alltid börjar kommandon med `sudo` när du startar skriptet.
+
+---
+
+**Lycka till! Din Home Assistant-disk är klar på någon minut – och du kan göra om processen när som helst med en ny disk eller ny version.**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 🇬🇧 **English — Detailed Technical Explanation**
 
@@ -153,14 +432,111 @@ Detta script möjliggör installation av Home Assistant OS (HAOS) på x86-64-mas
 
 ### **Full Installation Workflow**
 
-1. Starta Ubuntu (eller använd Live USB).
-2. Koppla in disk (den raderas!).
-3. Kör scriptet (`sudo ./haos_bios_factory_final.sh`).
-4. Välj disk, konfirmera med ‘yes’.
-5. Vänta — alltföras automatiskt (status syns).
-6. Sätt disken i valfri BIOS-maskin och boot — om allt fungerar - HAOS installeras/startar upp automatiskt utan din medverkan!
+# Steg-för-steg: Skapa Home Assistant OS-disk med `haos-non-uefi.sh` (för HELT nya Linux-användare)
 
 ---
+
+## **1. Ladda ner skriptet**
+
+### **a) Starta Ubuntu (eller liknande Linux) på datorn**
+- **Live USB**? Välj alltid "Testa Ubuntu" eller "Try Ubuntu" när du bootar från stickan, INTE "Installera Ubuntu".
+
+### **b) Öppna “Terminal”**
+- Klicka på menyn uppe till vänster och skriv “Terminal” (eller tryck **Ctrl+Alt+T**).
+
+### **c) Skriv in följande och tryck Enter:**
+
+```bash
+sudo apt update
+sudo apt install git curl xz-utils gdisk parted e2fsprogs grub-pc -y
+```
+*(Detta installerar alla verktyg som behövs. Klistra rakt in och tryck Enter!)*
+
+### **d) Ladda ner skriptet från GitHub**
+```bash
+git clone https://github.com/Karacsonyi-Endre/haos-non-uefi.git
+cd haos-non-uefi
+```
+
+---
+
+## **2. Sätt in mål-disken**
+
+- Sätt i den SSD/HDD/USB-sticka som du vill använda som Home Assistant-disk.
+- **VARNING: Alla data på denna raderas!**
+
+---
+
+## **3. Gör skriptet körbart**
+
+```bash
+chmod +x haos-non-uefi.sh
+```
+
+---
+
+## **4. Starta skriptet**
+
+```bash
+sudo ./haos-non-uefi.sh
+```
+
+- Det är **viktigt med sudo** i början! Annars får skriptet inte rätt att skriva till disken.
+
+---
+
+## **5. Följ instruktionerna på skärmen (“tangentbordsval”)**
+
+### **a) Välj version**
+- Skriptet visar olika versioner av Home Assistant OS. Skriv t.ex. “1” och tryck Enter för den senaste versionen, eller välj “EGEN_URL” om du vill ange en egen länk.
+
+### **b) Välj mål-disk**
+- Alla diskar listas med storlek/modell.
+- Skriv numret för rätt disk och tryck Enter.
+
+### **c) Bekräfta**
+- Du får ännu en varning att disken raderas.
+- Skriv exakt `yes` och tryck Enter för att fortsätta.
+
+### **d) Vänta**
+- Skriptet laddar ner, skriver och fixar klart allting automatiskt. Det kan ta några minuter beroende på din internet- och USB-hastighet.
+
+---
+
+## **6. Klart!**
+
+- När det står **"KLART!"** eller **"Ready"**, är det färdigt.
+- Dra ut disken, sätt in den i din gamla dator/server.
+- Starta – Home Assistant laddar automatiskt!
+
+---
+
+## **Extra för nybörjaren**
+
+- **Vad är en “terminal”?**  
+  Det är ett textfönster där du kan klistra in kommandon direkt och köra dem.
+- **Vad betyder “sudo”?**  
+  “Super User DO” – du får extra rättigheter så att du får skriva till diskar, installera mm.
+- **Måste jag välja exakt rätt disk?**  
+  JA! Skriptet raderar annars allting på den disk du pekar ut. Läs noga i listan, kolla storlek och modell så det verkligen är rätt.
+
+---
+
+## **Vanliga frågor**
+
+**Q: Kan detta förstöra min vanliga dator?**  
+A: Inte om du VÄLJER RÄTT DISK. Var extra noga när valrutan visas!
+
+**Q: Måste jag installera Ubuntu?**  
+A: Nej! Starta bara från USB och välj “Testa Ubuntu”. Då riskerar du inget på din vanliga dator.
+
+**Q: Jag får “permission denied” eller “no such file”?**  
+A: Kontrollera stavning, att du är i rätt katalog (`cd haos-non-uefi`), och alltid börjar kommandon med `sudo` när du startar skriptet.
+
+---
+
+**Lycka till! Din Home Assistant-disk är klar på någon minut – och du kan göra om processen när som helst med en ny disk eller ny version.**
+
 
 ### **Community-acknowledgement**
 
