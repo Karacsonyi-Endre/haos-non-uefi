@@ -139,6 +139,7 @@ fi
 
 echo
 echo "========================================="
-echo " HAOS FABRIKSDISK REDO OCH BOOTBAR!"
+echo " HAOS DISK OK OCH BOOTBAR!"
 echo " Brygga-partition: ${BRIDGE_MB:-ingen, fallback} MB"
+echo " Best regards, Endre Karacsonyi"
 echo "========================================="
