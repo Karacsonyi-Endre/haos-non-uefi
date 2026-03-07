@@ -29,7 +29,8 @@ Since the script injects a Hybrid-MBR, your BIOS can “see” the disk as an ol
 ## 1. Download the script
 
 ### a) Boot Ubuntu (or similar Linux) on your computer
-- **Live USB?** Always pick "Try Ubuntu" (not "Install Ubuntu") when you boot from the thumbdrive.
+- **Live USB?** [Download Ubuntu Desktop here](https://ubuntu.com/download/desktop)
+- Always pick "Try Ubuntu" (not "Install Ubuntu") when you boot from the thumbdrive.
 
 ### b) Open the terminal
 - Click the top left menu and type “Terminal” (or press **Ctrl+Alt+T**).
@@ -157,7 +158,8 @@ Eftersom skriptet injicerar en Hybrid-MBR, kan ditt BIOS "se" disken som en gamm
 ## **1. Ladda ner skriptet**
 
 ### **a) Starta Ubuntu (eller liknande Linux) på datorn**
-- **Live USB?** Välj alltid "Testa Ubuntu" eller "Try Ubuntu" när du bootar från stickan, INTE "Installera Ubuntu".
+- **Live USB?** [Download Ubuntu Desktop here](https://ubuntu.com/download/desktop)
+- Välj alltid "Testa Ubuntu" eller "Try Ubuntu" när du bootar från stickan, INTE "Installera Ubuntu".
 
 ### **b) Öppna “Terminal”**
 - Klicka på menyn uppe till vänster och skriv “Terminal” (eller tryck **Ctrl+Alt+T**).
