@@ -78,7 +78,7 @@ sudo ./haos-non-uefi.sh
 ## 5. Follow the on-screen instructions
 
 ### a) Choose HAOS version
-- The script presents a menu with Home Assistant OS versions. Type a number (e.g., “1”) and press Enter for the newest version, or choose “EGEN_URL” to use your own link.
+- The script presents a menu with Home Assistant OS versions. Type a number (e.g., “1”) and press Enter for the newest version, or choose “MY_URL” to use your own link.
 
 ### b) Choose your target disk
 - All disks are listed with size/model.
@@ -95,7 +95,7 @@ sudo ./haos-non-uefi.sh
 
 ## 6. Done!
 
-- When you see **"KLART!"** or **"Ready"**, you’re finished.
+- When you see **"HAOS DISK READY AND BOOTABLE!"**, you’re finished.
 - Remove the disk and plug it into your old PC/server.
 - Boot up – Home Assistant will start automatically!
 
@@ -207,7 +207,7 @@ sudo ./haos-non-uefi.sh
 ## **5. Följ instruktionerna på skärmen (“tangentbordsval”)**
 
 ### **a) Välj HAOS-version**
-- Skriptet visar olika versioner av Home Assistant OS. Skriv t.ex. “1” och tryck Enter för den senaste versionen, eller välj “EGEN_URL” om du vill ange en egen länk.
+- Skriptet visar olika versioner av Home Assistant OS. Skriv t.ex. “1” och tryck Enter för den senaste versionen, eller välj “MY_URL” om du vill ange en egen länk.
 
 ### **b) Välj mål-disk**
 - Alla diskar listas med storlek/modell.
@@ -224,7 +224,7 @@ sudo ./haos-non-uefi.sh
 
 ## **6. Klart!**
 
-- När det står **"KLART!"** eller **"Ready"**, är det färdigt.
+- När det står **"HAOS DISK READY AND BOOTABLE!"**, är det färdigt.
 - Dra ut disken, sätt in den i din gamla dator/server.
 - Starta – Home Assistant laddar automatiskt!
 
