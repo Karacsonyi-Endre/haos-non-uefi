@@ -84,7 +84,7 @@ This script enables installation of Home Assistant OS (HAOS) on x86-64 machines 
 
 ---
 
-_Last updated: 7 March 2026_
+_Last updated: 7 March 2026_ Best regards, Endre Karacsonyi
 
 ---
 ## 🇸🇪 **Svenska — Teknisk förklaring**
