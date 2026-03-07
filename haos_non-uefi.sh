@@ -1,10 +1,36 @@
 #!/bin/bash
 set -e
 
-echo "================================="
-echo " HAOS Legacy BIOS Factory Creator"
-echo "================================="
+# -------- 1. IMAGEVAL --------
 
+declare -A IMAGES
+IMAGES["17.1"]="https://github.com/home-assistant/operating-system/releases/download/17.1/haos_generic-x86-64-17.1.img.xz"
+IMAGES["15.2"]="https://github.com/home-assistant/operating-system/releases/download/15.2/haos_generic-x86-64-15.2.img.xz"
+IMAGES["13.0"]="https://github.com/home-assistant/operating-system/releases/download/13.0/haos_generic-x86-64-13.0.img.xz"
+IMAGES["EGEN_URL"]="EGEN_URL"
+
+if [ -z "$1" ]; then
+    echo "Vilken HAOS-version/image vill du radera/använda?"
+    select image in "${!IMAGES[@]}"; do
+        case $image in
+            "EGEN_URL")
+                read -rp "Ange fullständig URL till .img.xz-arkiv: " CUSTOM_URL
+                IMG="$CUSTOM_URL"
+                break
+                ;;
+            *)
+                IMG="${IMAGES[$image]}"
+                break
+                ;;
+        esac
+    done
+else
+    IMG="$1"
+fi
+
+# -------- 2. RESTEN AV DITT URSPRUNGLIGA SCRIPT --------
+
+echo
 echo "Alla diskar på systemet:"
 lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
 echo
@@ -13,9 +39,8 @@ echo "Tillgängliga diskar:"
 lsblk -dno NAME,SIZE,MODEL | grep -E 'sd[a-z]' | nl -w2 -s': '
 echo
 
-read -p "Vilken disk ska användas? (t.ex. sda): " DISK_SHORT
+read -p "Vilken disk ska användas? (Skriv t.ex. sdb): " DISK_SHORT
 DISK="/dev/$DISK_SHORT"
-IMG="https://github.com/home-assistant/operating-system/releases/download/13.0/haos_generic-x86-64-13.0.img.xz"
 
 echo
 echo "Måldisk:      $DISK"
