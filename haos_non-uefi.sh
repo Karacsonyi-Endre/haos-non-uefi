@@ -82,6 +82,9 @@ echo
 echo ">>>  NOTE: Don´t touch! Let the script finish its work!   <<<"
 echo
 echo ">>>        Lots of warnings and errors are ok!            <<<"
+echo
+echo
+echo "========================================================="
 sudo sgdisk -e $DISK
 sudo partprobe $DISK
 sudo udevadm settle
